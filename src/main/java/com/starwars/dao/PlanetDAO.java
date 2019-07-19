@@ -39,14 +39,14 @@ public class PlanetDAO {
 
 	public List<Document> getByName(String name) {
 		ArrayList<Document> documents = collection
-				.find(Filters.eq("name", Pattern.compile(name, Pattern.CASE_INSENSITIVE)))
+				.find(Filters.eq("name", Pattern.compile(name.replaceAll("[^a-zA-Z0-9\\s]", ""), Pattern.CASE_INSENSITIVE)))
 				.into(new ArrayList<Document>());
 		return _setStringId(documents);
 	}
 
 	public Document getById(String id) {
 		try {
-			Document document = collection.find(Filters.eq("_id", new ObjectId(id))).first();
+			Document document = collection.find(Filters.eq("_id", new ObjectId(id.replaceAll("[^a-zA-Z0-9\\s]", "")))).first();
 
 			if (document != null) {
 				document.put("_id", document.get("_id").toString());
@@ -62,7 +62,7 @@ public class PlanetDAO {
 
 	public Document delete(String id) {
 		try {
-			Document document = collection.findOneAndDelete(Filters.eq("_id", new ObjectId(id)));
+			Document document = collection.findOneAndDelete(Filters.eq("_id", new ObjectId(id.replaceAll("[^a-zA-Z0-9\\s]", ""))));
 
 			if (document != null) {
 				document.put("_id", document.get("_id").toString());
